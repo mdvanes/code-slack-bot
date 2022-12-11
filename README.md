@@ -26,7 +26,10 @@ or:
 
 * in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-cody-slackbot Function App. Allow overwriting the existing deployment.
 
-Test with `curl https://???/api/animal-hero/\?animal\=panda`
+Test with `curl ???/api/animal-hero/\?animal\=panda`
+
+Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence%3F`
+
 
 TODO
 

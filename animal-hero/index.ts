@@ -1,5 +1,4 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import { Configuration, OpenAIApi } from "openai";
 import { queryOpenAi } from "../lib/util";
 
 const generatePrompt = (animal: string): string => {
@@ -35,13 +34,15 @@ const httpTrigger: AzureFunction = async function (
   }
 
   // Workaround because debug mode in VS Code with .env does not work
-  const KEY = req.query.key;
-  const OPENAI_API_KEY = KEY ?? process.env.OPENAI_API_KEY;
+  // const KEY = req.query.key;
+  // const OPENAI_API_KEY = KEY ?? process.env.OPENAI_API_KEY;
 
   try {
     const result = await queryOpenAi(
       { req, context },
-      generatePrompt(req.query.animal ?? req.body.animal)
+      {
+        prompt: generatePrompt(animal),
+      }
     );
     const heroNames = result.trim().split(", ");
 
@@ -60,37 +61,6 @@ const httpTrigger: AzureFunction = async function (
     };
     return;
   }
-
-  // if (!OPENAI_API_KEY) {
-  //   context.res = {
-  //     status: 400,
-  //     body: "Missing env OPENAI_API_KEY",
-  //   };
-  //   return;
-  // }
-
-  // const configuration = new Configuration({
-  //   apiKey: OPENAI_API_KEY,
-  // });
-  // const openai = new OpenAIApi(configuration);
-
-  // const completion = await openai.createCompletion({
-  //   model: "text-davinci-002",
-  //   prompt: generatePrompt(req.query.animal ?? req.body.animal),
-  //   temperature: 0.6,
-  // });
-
-  // context.log("completion=", JSON.stringify(completion.data));
-
-  // const heroNames = completion.data.choices[0].text.trim().split(", ");
-
-  // context.res = {
-  //   // status: 200, /* Defaults to 200 */
-  //   body: {
-  //     animal,
-  //     heroNames,
-  //   },
-  // };
 };
 
 export default httpTrigger;
