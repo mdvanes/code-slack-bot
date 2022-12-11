@@ -3,7 +3,7 @@ import { Configuration, OpenAIApi } from "openai";
 
 const generatePrompt = (animal: string): string => {
   const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
+    animal.toUpperCase() + animal.slice(1).toLowerCase();
   return `Suggest three names for an animal that is a superhero.
   
   Animal: Cat
@@ -15,7 +15,7 @@ const generatePrompt = (animal: string): string => {
 };
 
 /*
-Call with: { animal: "panda" }
+Call with: { "animal": "panda" }
 */
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -27,14 +27,35 @@ const httpTrigger: AzureFunction = async function (
   //     ? "Hello, " + name + ". This HTTP triggered function executed successfully."
   //     : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
 
+  const animal = req.query.animal ?? req.body.animal;
+
+  if (!animal) {
+    context.res = {
+      status: 400,
+      body: 'Missing param "animal"',
+    };
+    return;
+  }
+
+  const { OPENAI_API_KEY } = process.env;
+  context.log("OPENAI_API_KEY=", OPENAI_API_KEY);
+
+  if (!OPENAI_API_KEY) {
+    context.res = {
+      status: 400,
+      body: 'Missing env OPENAI_API_KEY',
+    };
+    return;
+  }
+
   const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
 
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
-    prompt: generatePrompt(req.query.animal),
+    prompt: generatePrompt(req.query.animal ?? req.body.animal),
     temperature: 0.6,
   });
 
