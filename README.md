@@ -1,3 +1,13 @@
+# Cody
+
+> Hi, I'm Cody
+
+[Slack](https://slack.com) bot based on [Open AI](https://openai.com), [Azure](https://azure.com) Functions, and [TypeScript](https://typescriptlang.org).
+
+![Cody](avatar.thumbnail.jpg "Cody - credits: https://thispersondoesnotexist.com")
+
+Credits for this photo: https://thispersondoesnotexist.com
+
 ## Developing
 
 - Configure a .env file in the root of the project with values for:
@@ -29,6 +39,10 @@ or:
 Test with `curl ???/api/animal-hero/\?animal\=panda`
 
 Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence%3F`
+
+
+## Set up the Slack Bot
+
 
 
 TODO
