@@ -22,10 +22,6 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   context.log("HTTP trigger function CodySlackBot processed a request.");
-  // const name = (req.query.name || (req.body && req.body.name));
-  // const responseMessage = name
-  //     ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-  //     : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
 
   const animal = req.query.animal ?? req.body.animal;
 
@@ -37,13 +33,14 @@ const httpTrigger: AzureFunction = async function (
     return;
   }
 
-  const { OPENAI_API_KEY } = process.env;
-  context.log("OPENAI_API_KEY=", OPENAI_API_KEY);
+  // Workaround because debug mode in VS Code with .env does not work
+  const KEY = req.query.key;
+  const OPENAI_API_KEY = KEY ?? process.env.OPENAI_API_KEY;
 
   if (!OPENAI_API_KEY) {
     context.res = {
       status: 400,
-      body: 'Missing env OPENAI_API_KEY',
+      body: "Missing env OPENAI_API_KEY",
     };
     return;
   }
@@ -59,9 +56,16 @@ const httpTrigger: AzureFunction = async function (
     temperature: 0.6,
   });
 
+  context.log("completion=", JSON.stringify(completion.data));
+
+  const heroNames = completion.data.choices[0].text.trim().split(", ");
+
   context.res = {
     // status: 200, /* Defaults to 200 */
-    body: completion.data.choices[0].text,
+    body: {
+      animal,
+      heroNames,
+    },
   };
 };
 
