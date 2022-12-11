@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import { postSlackMessage } from "../lib/slack";
 import { queryOpenAi } from "../lib/util";
 
 const generatePrompt = (animal: string): string => {
@@ -45,6 +46,10 @@ const httpTrigger: AzureFunction = async function (
       }
     );
     const heroNames = result.trim().split(", ");
+
+    postSlackMessage(
+      `I made up some names for a hero ${animal}: ${heroNames.join(", ")}`
+    );
 
     context.res = {
       // status: 200, /* Defaults to 200 */

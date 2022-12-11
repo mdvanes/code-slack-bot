@@ -43,7 +43,12 @@ Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence
 
 ## Set up the Slack Bot
 
-
+* Steps: https://www.napkin.io/blog/how-to-make-slack-bot-reminder-9-steps or https://api.slack.com/start/building/bolt-js
+  * Create an app: https://api.slack.com/apps?new_app=1&ref=bolt_start_hub
+  * App Name: Cody Starr
+  * Workspace: ...
+  * OAuth & Permissions > Scopes > Bot token Scopes: add "chat:write"
+  * Install to Workspace, copy token
 
 TODO
 
