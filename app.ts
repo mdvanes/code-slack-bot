@@ -121,6 +121,7 @@ app.event("app_mention", async ({ event, context, client, say, payload }) => {
   const [mention, command, arg] = payload.text.split(" ");
 
   const sayAnimalHero = async () => {
+    console.log("Starting sayAnimalHero");
     const animal = arg;
     const result = await queryOpenAI({
       prompt: generateHeroPrompt(animal),
@@ -132,6 +133,7 @@ app.event("app_mention", async ({ event, context, client, say, payload }) => {
         event.user
       }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`
     );
+    console.log("Finished sayAnimalHero");
   };
 
   try {
