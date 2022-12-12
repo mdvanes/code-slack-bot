@@ -25,6 +25,9 @@ or instead of the last line:
 
 It needs to keep a socket open, because it should listen to incoming requests from Slack. That's why Azure Functions are not a good fit for the Slack bot.
 
+In https://app.slack.com/app-settings/??/??/socket-mode
+  * enable Socket Mode and create a token with name cody-app-token
+
 ```
 npm run build
 az login --tenant ??? # id from Azure Active Directory
@@ -34,6 +37,7 @@ az webapp up
 # Set envars in Azure: rg-codestar-cody-slackbot > cody-slack-bot-app > Settings > Configuration > Application Settings, add:
 OPENAI_API_KEY=the_openai_api_key
 SLACK_BOT_TOKEN=the_slackbot_token
+SLACK_APP_TOKEN=the_cody-app-token
 SLACK_SIGNING_SECRET=the_slack_signing_secret
 
 # smoke test
@@ -46,7 +50,13 @@ https://cody-slack-bot-app.azurewebsites.net/api/
 * Subscribe to bot events > add bot user event: 
   * app_mention
   * app_home_opened
+  * message.channels
+  * team_join
   * (and reinstall app)
+* And under "OAuth & Permission", add scopes:
+  * app_mentions:read
+  * channels:history
+  * users:read
 
 ## Deploy to Prod Slot
 
