@@ -5,7 +5,6 @@ import { App } from "@slack/bolt";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 dotenv.config();
-console.log(process.env);
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -27,16 +26,8 @@ app.command("/hi", async ({ ack, payload, context }) => {
         {
           type: "section",
           text: {
-            type: "mrkdwn",
-            text: "Go ahead. Click it.",
-          },
-          accessory: {
-            type: "button",
-            text: {
-              type: "plain_text",
-              text: "Click me!",
-            },
-            action_id: "button_abc",
+            type: "plain_text",
+            text: "Hi! :cs_rotating:",
           },
         },
       ],
