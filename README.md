@@ -26,7 +26,8 @@ or instead of the last line:
 It needs to keep a socket open, because it should listen to incoming requests from Slack. That's why Azure Functions are not a good fit for the Slack bot.
 
 In https://app.slack.com/app-settings/??/??/socket-mode
-  * enable Socket Mode and create a token with name cody-app-token
+
+- enable Socket Mode and create a token with name cody-app-token
 
 ```
 npm run build
@@ -45,52 +46,52 @@ az webapp log tail
 https://cody-slack-bot-app.azurewebsites.net/api/
 ```
 
-* Go to https://api.slack.com/apps/???/event-subscriptions? where ??? is the app id.
-* Enable Event Subscriptions and add the URL https://cody-slack-bot-app.azurewebsites.net/slack/events
-* Subscribe to bot events > add bot user event: 
-  * app_mention
-  * app_home_opened
-  * message.channels
-  * team_join
-  * (and reinstall app)
-* And under "OAuth & Permission", add scopes:
-  * app_mentions:read
-  * channels:history
-  * users:read
+- Go to https://api.slack.com/apps/???/event-subscriptions? where ??? is the app id.
+- Enable Event Subscriptions and add the URL https://cody-slack-bot-app.azurewebsites.net/slack/events
+- Subscribe to bot events > add bot user event:
+  - app_mention
+  - app_home_opened
+  - message.channels
+  - team_join
+  - (and reinstall app)
+- And under "OAuth & Permission", add scopes:
+  - app_mentions:read
+  - channels:history
+  - users:read
 
 ## Deploy to Prod Slot
 
-* set envars in Azure Function App console under > configuration > Application settings, add:
+- set envars in Azure Function App console under > configuration > Application settings, add:
 
 ```
 OPENAI_API_KEY=the_api_key
 ```
 
-* In VS Code, in the Azure toolbar under Resources, expand codestar-website-api > Slots > test and right-click. Click "Swap slot..."
-* Select the production slot
+- In VS Code, in the Azure toolbar under Resources, expand codestar-website-api > Slots > test and right-click. Click "Swap slot..."
+- Select the production slot
 
 or:
 
-* in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-cody-slackbot Function App. Allow overwriting the existing deployment.
+- in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-cody-slackbot Function App. Allow overwriting the existing deployment.
 
 Test with `curl ???/api/animal-hero/\?animal\=panda`
 
 Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence%3F`
 
-
 ## Set up the Slack Bot
 
-* Steps: https://www.napkin.io/blog/how-to-make-slack-bot-reminder-9-steps or https://api.slack.com/start/building/bolt-js
-  * Create an app: https://api.slack.com/apps?new_app=1&ref=bolt_start_hub
-  * App Name: Cody Starr
-  * Workspace: ...
-  * OAuth & Permissions > Scopes > Bot token Scopes: add "chat:write"
-  * Install to Workspace, copy token
-  * /invite @Cody Starr
+- Steps: https://www.napkin.io/blog/how-to-make-slack-bot-reminder-9-steps or https://api.slack.com/start/building/bolt-js
+  - Create an app: https://api.slack.com/apps?new_app=1&ref=bolt_start_hub
+  - App Name: Cody Starr
+  - Workspace: ...
+  - OAuth & Permissions > Scopes > Bot token Scopes: add "chat:write"
+  - Install to Workspace, copy token
+  - /invite @Cody Starr
 
 TODO
 
-add CORS protection
-CORS: in Azure Function App console under > API > CORS
-    Request credentials can be turned OFF
-    Add allowed origins: https://code-star.github.io
+- Answer in a thread
+- add CORS protection
+  CORS: in Azure Function App console under > API > CORS
+  Request credentials can be turned OFF
+  Add allowed origins: https://code-star.github.io

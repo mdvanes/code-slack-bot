@@ -45,7 +45,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: "I am a work in progress :construction:, but then again, who isn't?",
+              text: "I am a work in progress :construction:, but then again, who isn't?\nI can answer questions by using <https://openai.com|*OpenAI*>. It's not free, so keep that in mind :smile:",
             },
           },
           // {
