@@ -3,7 +3,8 @@
 // Require the Bolt package (github.com/slackapi/bolt)
 import { App } from "@slack/bolt";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { generateHeroPrompt } from "./lib/heroPrompt";
+import { generateHeroPrompt, sayAnimalHero } from "./lib/heroPrompt";
+import { sayQandA } from "./lib/qAndAPrompt";
 import { queryOpenAI } from "./lib/queryOpenAI";
 import { queryOpenAi } from "./lib/util";
 
@@ -120,25 +121,12 @@ app.event("app_mention", async ({ event, context, client, say, payload }) => {
 
   const [mention, command, arg] = payload.text.split(" ");
 
-  const sayAnimalHero = async () => {
-    console.log("Starting sayAnimalHero");
-    const animal = arg;
-    const result = await queryOpenAI({
-      prompt: generateHeroPrompt(animal),
-    });
-    const heroNames = result.trim().split(", ");
-
-    await say(
-      `Hi <@${
-        event.user
-      }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`
-    );
-    console.log("Finished sayAnimalHero");
-  };
-
   try {
     if (command === "hero") {
-      await sayAnimalHero();
+      await sayAnimalHero(arg, say, event);
+    } else if (command === "question") {
+      const question = payload.text.split(" ").slice(2).join(" ");
+      await sayQandA(question, say, event);
     } else {
       await sayDefault();
     }
