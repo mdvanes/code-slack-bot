@@ -11,6 +11,59 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
+app.event('app_home_opened', async ({ event, client, context }) => {
+  try {
+    /* view.publish is the method that your app uses to push a view to the Home tab */
+    const result = await client.views.publish({
+
+      /* the user that opened your app's app home */
+      user_id: event.user,
+
+      /* the view object that appears in the app home*/
+      view: {
+        type: 'home',
+        callback_id: 'home_view',
+
+        /* body of the view */
+        blocks: [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Hi, I am _Cody Starr_* :cs_rotate:"
+            }
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "I am a work in progress :construction:, but then again, who isn't?"
+            }
+          },
+          // {
+          //   "type": "actions",
+          //   "elements": [
+          //     {
+          //       "type": "button",
+          //       "text": {
+          //         "type": "plain_text",
+          //         "text": "Click me!"
+          //       }
+          //     }
+          //   ]
+          // }
+        ]
+      }
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+});
+
 // Listen for a slash command invocation
 app.command("/hi", async ({ ack, payload, context }) => {
   // Acknowledge the command request

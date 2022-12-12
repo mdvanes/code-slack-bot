@@ -41,6 +41,13 @@ az webapp log tail
 https://cody-slack-bot-app.azurewebsites.net/api/
 ```
 
+* Go to https://api.slack.com/apps/???/event-subscriptions? where ??? is the app id.
+* Enable Event Subscriptions and add the URL https://cody-slack-bot-app.azurewebsites.net/slack/events
+* Subscribe to bot events > add bot user event: 
+  * app_mention
+  * app_home_opened
+  * (and reinstall app)
+
 ## Deploy to Prod Slot
 
 * set envars in Azure Function App console under > configuration > Application settings, add:
