@@ -3,6 +3,9 @@
 // Require the Bolt package (github.com/slackapi/bolt)
 import { App } from "@slack/bolt";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import { generateHeroPrompt } from "./lib/heroPrompt";
+import { queryOpenAI } from "./lib/queryOpenAI";
+import { queryOpenAi } from "./lib/util";
 
 dotenv.config();
 
@@ -86,8 +89,10 @@ app.event("team_join", async ({ event, client, logger }) => {
 
 // subscribe to 'app_mention' event in your App config
 // need app_mentions:read and chat:write scopes
-app.event("app_mention", async ({ event, context, client, say }) => {
-  try {
+app.event("app_mention", async ({ event, context, client, say, payload }) => {
+  // console.log(event.text, payload.text, payload);
+
+  const sayDefault = async () => {
     await say({
       text: `Hi <@${event.user}>! Try saying "Hi Cody!"`,
       blocks: [
@@ -111,6 +116,30 @@ app.event("app_mention", async ({ event, context, client, say }) => {
         },
       ],
     });
+  };
+
+  const [mention, command, arg] = payload.text.split(" ");
+
+  const sayAnimalHero = async () => {
+    const animal = arg;
+    const result = await queryOpenAI({
+      prompt: generateHeroPrompt(animal),
+    });
+    const heroNames = result.trim().split(", ");
+
+    await say(
+      `Hi <@${
+        event.user
+      }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`
+    );
+  };
+
+  try {
+    if (command === "hero") {
+      await sayAnimalHero();
+    } else {
+      await sayDefault();
+    }
   } catch (error) {
     console.error(error);
   }
