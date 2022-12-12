@@ -21,6 +21,23 @@ or instead of the last line:
 - In VS Code Azure plugin, under Workspace, Function CodySlackBot, "Run function now"
 - Use request body: `{ "animal": "panda" }`
 
+## Deploy as Azure WebApp
+
+It needs to keep a socket open, because it should listen to incoming requests from Slack. That's why Azure Functions are not a good fit for the Slack bot.
+
+```
+npm run build
+az login --tenant ??? # id from Azure Active Directory
+# az webapp up --sku F1 --name cody-slack-bot-app --resource-group rg-cody-slack-bot --location westeurope
+az webapp up
+
+# smoke test
+az webapp log tail
+https://cody-slack-bot-app.azurewebsites.net/api/
+```
+
+
+
 ## Deploy to Prod Slot
 
 * set envars in Azure Function App console under > configuration > Application settings, add:
@@ -49,6 +66,7 @@ Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence
   * Workspace: ...
   * OAuth & Permissions > Scopes > Bot token Scopes: add "chat:write"
   * Install to Workspace, copy token
+  * /invite @Cody Starr
 
 TODO
 
