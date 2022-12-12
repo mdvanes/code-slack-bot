@@ -28,15 +28,18 @@ It needs to keep a socket open, because it should listen to incoming requests fr
 ```
 npm run build
 az login --tenant ??? # id from Azure Active Directory
-# az webapp up --sku F1 --name cody-slack-bot-app --resource-group rg-cody-slack-bot --location westeurope
+# first time: az webapp up --sku F1 --name cody-slack-bot-app --resource-group rg-codestar-cody-slackbot --location westeurope
 az webapp up
+
+# Set envars in Azure: rg-codestar-cody-slackbot > cody-slack-bot-app > Settings > Configuration > Application Settings, add:
+OPENAI_API_KEY=the_openai_api_key
+SLACK_BOT_TOKEN=the_slackbot_token
+SLACK_SIGNING_SECRET=the_slack_signing_secret
 
 # smoke test
 az webapp log tail
 https://cody-slack-bot-app.azurewebsites.net/api/
 ```
-
-
 
 ## Deploy to Prod Slot
 
