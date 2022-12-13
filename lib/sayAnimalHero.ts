@@ -1,5 +1,6 @@
 import { AppMentionEvent, SayFn } from "@slack/bolt";
 import { queryOpenAI } from "./queryOpenAI";
+import { AppMentionProps } from "./types";
 
 export const generateHeroPrompt = (animal: string): string => {
   const capitalizedAnimal =
@@ -15,15 +16,16 @@ export const generateHeroPrompt = (animal: string): string => {
 };
 
 export const sayAnimalHero = async (
-  animal: string,
-  say: SayFn,
-  event: AppMentionEvent
+  { say, event, client }: AppMentionProps,
+  animal: string
 ) => {
   console.log("Starting sayAnimalHero");
   const result = await queryOpenAI({
     prompt: generateHeroPrompt(animal),
   });
   const heroNames = result.trim().split(", ");
+
+  // client.chat.update
 
   await say({
     text: `Hi <@${

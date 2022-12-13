@@ -1,13 +1,19 @@
 // This example shows how to listen to a button click
 // It uses slash commands and actions
 // Require the Bolt package (github.com/slackapi/bolt)
-import { App } from "@slack/bolt";
+import {
+  AllMiddlewareArgs,
+  App,
+  SlackEventMiddlewareArgs,
+  SlackViewMiddlewareArgs,
+} from "@slack/bolt";
+import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { generateHeroPrompt, sayAnimalHero } from "./lib/heroPrompt";
+import { sayAnimalHero } from "./lib/sayAnimalHero";
 import { sayPaint } from "./lib/paintPrompt";
 import { sayQandA } from "./lib/qAndAPrompt";
-import { queryOpenAI } from "./lib/queryOpenAI";
-import { queryOpenAi } from "./lib/util";
+import { sayDefault } from "./lib/sayDefault";
+import { sayLoading } from "./lib/sayLoading";
 
 dotenv.config();
 
@@ -91,48 +97,25 @@ app.event("team_join", async ({ event, client, logger }) => {
 
 // subscribe to 'app_mention' event in your App config
 // need app_mentions:read and chat:write scopes
-app.event("app_mention", async ({ event, context, client, say, payload }) => {
+app.event("app_mention", async (props) => {
+  const { event, context, client, say, payload } = props;
   // console.log(event.text, payload.text, payload);
-
-  const sayDefault = async () => {
-    await say({
-      thread_ts: payload.thread_ts,
-      text: `Hi <@${event.user}>! Try saying "Hi Cody!"`,
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            // NOTE: without <@ only the user id is shown.
-            text: `Hi <@${event.user}>! Try saying _"Hi Cody!"_`,
-          },
-          // accessory: {
-          //   type: "button",
-          //   text: {
-          //     type: "plain_text",
-          //     text: "Button",
-          //     emoji: true,
-          //   },
-          //   value: "click_me_123",
-          //   action_id: "first_button",
-          // },
-        },
-      ],
-    });
-  };
 
   const [mention, command, ...arg] = payload.text.split(" ");
   const argsString = arg.join(" ");
 
   try {
     if (command === "hero") {
-      await sayAnimalHero(arg[0], say, event);
+      await sayLoading(props);
+      await sayAnimalHero(props, arg[0]);
     } else if (command === "question") {
+      await sayLoading(props);
       await sayQandA(argsString, say, event);
     } else if (command === "paint") {
+      await sayLoading(props);
       await sayPaint(argsString, say, event);
     } else {
-      await sayDefault();
+      await sayDefault(say, event);
     }
   } catch (error) {
     console.error(error);
