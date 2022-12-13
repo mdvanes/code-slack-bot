@@ -92,7 +92,6 @@ Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence
 
 TODO
 
-- Create an image. https://beta.openai.com/docs/guides/images/usage
 - Deploy on Azure. Use Azure botbuilder-adapter https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
 - add CORS protection
   CORS: in Azure Function App console under > API > CORS

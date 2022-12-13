@@ -4,6 +4,7 @@
 import { App } from "@slack/bolt";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { generateHeroPrompt, sayAnimalHero } from "./lib/heroPrompt";
+import { sayPaint } from "./lib/paintPrompt";
 import { sayQandA } from "./lib/qAndAPrompt";
 import { queryOpenAI } from "./lib/queryOpenAI";
 import { queryOpenAi } from "./lib/util";
@@ -120,14 +121,16 @@ app.event("app_mention", async ({ event, context, client, say, payload }) => {
     });
   };
 
-  const [mention, command, arg] = payload.text.split(" ");
+  const [mention, command, ...arg] = payload.text.split(" ");
+  const argsString = arg.join(" ");
 
   try {
     if (command === "hero") {
-      await sayAnimalHero(arg, say, event);
+      await sayAnimalHero(arg[0], say, event);
     } else if (command === "question") {
-      const question = payload.text.split(" ").slice(2).join(" ");
-      await sayQandA(question, say, event);
+      await sayQandA(argsString, say, event);
+    } else if (command === "paint") {
+      await sayPaint(argsString, say, event);
     } else {
       await sayDefault();
     }

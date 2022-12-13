@@ -1,9 +1,7 @@
 import { Context, HttpRequest } from "@azure/functions";
 import { Configuration, CreateCompletionRequest, OpenAIApi } from "openai";
 
-export const queryOpenAI = async (
-  prompt: Partial<CreateCompletionRequest>
-): Promise<string> => {
+export const getOpenAIInstance = async (): Promise<OpenAIApi> => {
   const { OPENAI_API_KEY } = process.env;
 
   if (!OPENAI_API_KEY) {
@@ -14,6 +12,13 @@ export const queryOpenAI = async (
     apiKey: OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
+  return openai;
+};
+
+export const queryOpenAI = async (
+  prompt: Partial<CreateCompletionRequest>
+): Promise<string> => {
+  const openai = await getOpenAIInstance();
 
   const config = prompt.model
     ? prompt
