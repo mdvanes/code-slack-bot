@@ -22,6 +22,9 @@ export const sayQandA = async (
     stop: ["\n"],
   });
 
-  await say(result.trim());
+  await say({
+    text: result.trim(),
+    thread_ts: event.thread_ts,
+  });
   console.log("Finished sayQandA");
 };

@@ -32,7 +32,8 @@ In https://app.slack.com/app-settings/??/??/socket-mode
 ```
 npm run build
 az login --tenant ??? # id from Azure Active Directory
-# first time: az webapp up --sku F1 --name cody-slack-bot-app --resource-group rg-codestar-cody-slackbot --location westeurope
+# first time: az webapp up --sku B1 --name cody-slack-bot-app --resource-group rg-codestar-cody-slackbot --location westeurope --plan CodyCodestar_asp_5948 --os-type Linux --runtime "NODE:18-lts" --logs --dryrun
+
 az webapp up
 
 # Set envars in Azure: rg-codestar-cody-slackbot > cody-slack-bot-app > Settings > Configuration > Application Settings, add:
@@ -40,6 +41,7 @@ OPENAI_API_KEY=the_openai_api_key
 SLACK_BOT_TOKEN=the_slackbot_token
 SLACK_APP_TOKEN=the_cody-app-token
 SLACK_SIGNING_SECRET=the_slack_signing_secret
+WEBSITES_CONTAINER_START_TIME_LIMIT=600
 
 # smoke test
 az webapp log tail
@@ -90,7 +92,8 @@ Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence
 
 TODO
 
-- Answer in a thread
+- Create an image. https://beta.openai.com/docs/guides/images/usage
+- Deploy on Azure. Use Azure botbuilder-adapter https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
 - add CORS protection
   CORS: in Azure Function App console under > API > CORS
   Request credentials can be turned OFF

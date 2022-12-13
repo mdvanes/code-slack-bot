@@ -95,6 +95,7 @@ app.event("app_mention", async ({ event, context, client, say, payload }) => {
 
   const sayDefault = async () => {
     await say({
+      thread_ts: payload.thread_ts,
       text: `Hi <@${event.user}>! Try saying "Hi Cody!"`,
       blocks: [
         {

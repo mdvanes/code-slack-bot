@@ -25,10 +25,11 @@ export const sayAnimalHero = async (
   });
   const heroNames = result.trim().split(", ");
 
-  await say(
-    `Hi <@${
+  await say({
+    text: `Hi <@${
       event.user
-    }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`
-  );
+    }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`,
+    thread_ts: event.thread_ts,
+  });
   console.log("Finished sayAnimalHero");
 };
