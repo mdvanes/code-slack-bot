@@ -1,5 +1,5 @@
-import { AppMentionEvent, SayFn } from "@slack/bolt";
 import { queryOpenAI } from "./queryOpenAI";
+import { sayLoading } from "./sayLoading";
 import { AppMentionProps } from "./types";
 
 export const generateHeroPrompt = (animal: string): string => {
@@ -15,23 +15,25 @@ export const generateHeroPrompt = (animal: string): string => {
     Names:`;
 };
 
-export const sayAnimalHero = async (
-  { say, event, client }: AppMentionProps,
-  animal: string
-) => {
+export const sayAnimalHero = async (props: AppMentionProps, animal: string) => {
   console.log("Starting sayAnimalHero");
+  const loadingMsg = await sayLoading(props);
+
+  const { event, client } = props;
+
   const result = await queryOpenAI({
     prompt: generateHeroPrompt(animal),
   });
   const heroNames = result.trim().split(", ");
 
-  // client.chat.update
-
-  await say({
+  client.chat.update({
     text: `Hi <@${
       event.user
     }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`,
     thread_ts: event.thread_ts,
+    channel: loadingMsg.channel,
+    ts: loadingMsg.ts,
   });
+
   console.log("Finished sayAnimalHero");
 };

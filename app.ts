@@ -106,7 +106,6 @@ app.event("app_mention", async (props) => {
 
   try {
     if (command === "hero") {
-      await sayLoading(props);
       await sayAnimalHero(props, arg[0]);
     } else if (command === "question") {
       await sayLoading(props);
