@@ -2,7 +2,7 @@
 
 > Hi, I'm Cody
 
-[Slack](https://slack.com) bot based on [Open AI](https://openai.com), [Azure](https://azure.com) Functions, and [TypeScript](https://typescriptlang.org).
+[Slack](https://slack.com) bot based on [Open AI](https://openai.com), [Azure](https://azure.com), and [TypeScript](https://typescriptlang.org).
 
 ![Cody](avatar.thumbnail.jpg "Cody - credits: https://thispersondoesnotexist.com")
 
@@ -60,6 +60,8 @@ https://cody-slack-bot-app.azurewebsites.net/api/
   - app_mentions:read
   - channels:history
   - users:read
+  - files:write
+  - files:read
 
 ## Deploy to Prod Slot
 

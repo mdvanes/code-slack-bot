@@ -10,7 +10,7 @@ import {
 import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sayAnimalHero } from "./lib/sayAnimalHero";
-import { sayPaint } from "./lib/paintPrompt";
+import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/qAndAPrompt";
 import { sayDefault } from "./lib/sayDefault";
 import { sayLoading } from "./lib/sayLoading";
@@ -108,11 +108,9 @@ app.event("app_mention", async (props) => {
     if (command === "hero") {
       await sayAnimalHero(props, arg[0]);
     } else if (command === "question") {
-      await sayLoading(props);
       await sayQandA(argsString, say, event);
     } else if (command === "paint") {
-      await sayLoading(props);
-      await sayPaint(argsString, say, event);
+      await sayPaint(props, argsString);
     } else {
       await sayDefault(say, event);
     }
