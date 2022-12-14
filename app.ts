@@ -66,16 +66,25 @@ app.event("app_mention", async (props) => {
   }
 });
 
-// app.message(/^(hi|hello|hey).*/, async ({ context, say }) => {
-app.message("Hi Cody!", async ({ message, event, context, say }) => {
-  // const greeting = context.matches[0];
+app.message(
+  new RegExp(/^(hi|hello|hey) cody\!.*/, "i"),
+  async ({ message, event, context, say, logger, client, payload }) => {
+    // @ts-expect-error
+    const user = message.user;
 
-  // @ts-expect-error ??
-  const u = message.user;
+    const result = await client.users.info({
+      user,
+    });
 
-  // await say(`${greeting} <@${context.user}>! :cs_rotating:`);
-  await say(`Hi <@${u}>! :cs_rotating:`);
-});
+    const name = result?.user?.profile?.first_name ?? `<@${user}>`;
+
+    await say({
+      text: `Hi ${name}! :cs_rotating:`,
+      // @ts-expect-error
+      thread_ts: event.thread_ts,
+    });
+  }
+);
 
 (async () => {
   // Start your app
