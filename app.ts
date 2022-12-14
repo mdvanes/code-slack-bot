@@ -1,19 +1,13 @@
 // This example shows how to listen to a button click
 // It uses slash commands and actions
 // Require the Bolt package (github.com/slackapi/bolt)
-import {
-  AllMiddlewareArgs,
-  App,
-  SlackEventMiddlewareArgs,
-  SlackViewMiddlewareArgs,
-} from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
+import { App } from "@slack/bolt";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import { publishAppHome } from "./lib/publishAppHome";
 import { sayAnimalHero } from "./lib/sayAnimalHero";
+import { sayDefault } from "./lib/sayDefault";
 import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/sayQAndA";
-import { sayDefault } from "./lib/sayDefault";
-import { sayLoading } from "./lib/sayLoading";
 
 dotenv.config();
 
@@ -24,52 +18,9 @@ const app = new App({
   socketMode: true,
 });
 
-app.event("app_home_opened", async ({ event, client, context }) => {
+app.event("app_home_opened", async (props) => {
   try {
-    /* view.publish is the method that your app uses to push a view to the Home tab */
-    const result = await client.views.publish({
-      /* the user that opened your app's app home */
-      user_id: event.user,
-
-      /* the view object that appears in the app home*/
-      view: {
-        type: "home",
-        callback_id: "home_view",
-
-        /* body of the view */
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "*Hi, I am _Cody Starr_* :sunglasses:",
-            },
-          },
-          {
-            type: "divider",
-          },
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "I am a work in progress :construction:, but then again, who isn't?\nI can answer questions by using <https://openai.com|*OpenAI*>. It's not free, so keep that in mind :smile:",
-            },
-          },
-          // {
-          //   "type": "actions",
-          //   "elements": [
-          //     {
-          //       "type": "button",
-          //       "text": {
-          //         "type": "plain_text",
-          //         "text": "Click me!"
-          //       }
-          //     }
-          //   ]
-          // }
-        ],
-      },
-    });
+    await publishAppHome(props);
   } catch (error) {
     console.error(error);
   }
@@ -91,10 +42,6 @@ app.event("team_join", async ({ event, client, logger }) => {
   }
 });
 
-// app.message("knockknock", async ({ message, say }) => {
-//   await say(`_Who's there?_`);
-// });
-
 // subscribe to 'app_mention' event in your App config
 // need app_mentions:read and chat:write scopes
 app.event("app_mention", async (props) => {
@@ -108,7 +55,7 @@ app.event("app_mention", async (props) => {
     if (command === "hero") {
       await sayAnimalHero(props, arg[0]);
     } else if (command === "question") {
-      await sayQandA(argsString, say, event);
+      await sayQandA(props, argsString);
     } else if (command === "paint") {
       await sayPaint(props, argsString);
     } else {
@@ -129,6 +76,17 @@ app.message("Hi Cody!", async ({ message, event, context, say }) => {
   // await say(`${greeting} <@${context.user}>! :cs_rotating:`);
   await say(`Hi <@${u}>! :cs_rotating:`);
 });
+
+(async () => {
+  // Start your app
+  await app.start(process.env.PORT || 3000);
+
+  console.log("⚡️ Bolt app is running!");
+})();
+
+// app.message("knockknock", async ({ message, say }) => {
+//   await say(`_Who's there?_`);
+// });
 
 // Listen for a slash command invocation
 // app.command("/hi", async ({ ack, payload, context }) => {
@@ -189,10 +147,3 @@ app.message("Hi Cody!", async ({ message, event, context, say }) => {
 //     console.error(error);
 //   }
 // });
-
-(async () => {
-  // Start your app
-  await app.start(process.env.PORT || 3000);
-
-  console.log("⚡️ Bolt app is running!");
-})();

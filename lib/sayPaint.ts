@@ -6,11 +6,12 @@ import { getOpenAIInstance } from "./queryOpenAI";
 import { sayLoading } from "./sayLoading";
 import { AppMentionProps } from "./types";
 
-export const sayPaint = async (props: AppMentionProps, paint: string) => {
-  console.log("Starting sayPaint");
-  const loadingMsg = await sayLoading(props);
+const pipeline = promisify(stream.pipeline);
 
-  const { event, client } = props;
+export const sayPaint = async (props: AppMentionProps, paint: string) => {
+  const { event, client, logger } = props;
+  logger.info("Starting sayPaint");
+  const loadingMsg = await sayLoading(props);
 
   const openai = await getOpenAIInstance();
 
@@ -26,7 +27,6 @@ export const sayPaint = async (props: AppMentionProps, paint: string) => {
   // const image_url =
   //   "https://cdn.openai.com/API/images/guides/image_generation_simple.webp";
 
-  const pipeline = promisify(stream.pipeline);
   await pipeline(got.stream(image_url), createWriteStream("./image.webp"));
 
   await client.files.uploadV2({
@@ -37,10 +37,10 @@ export const sayPaint = async (props: AppMentionProps, paint: string) => {
     filename: `${paint}.webp`,
   });
 
-  client.chat.delete({
+  await client.chat.delete({
     thread_ts: event.thread_ts,
     channel: loadingMsg.channel,
     ts: loadingMsg.ts,
   });
-  console.log("Finished sayPaint");
+  logger.info("Finished sayPaint");
 };

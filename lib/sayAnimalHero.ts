@@ -16,17 +16,16 @@ export const generateHeroPrompt = (animal: string): string => {
 };
 
 export const sayAnimalHero = async (props: AppMentionProps, animal: string) => {
-  console.log("Starting sayAnimalHero");
+  const { event, client, logger } = props;
+  logger.info("Starting sayAnimalHero");
   const loadingMsg = await sayLoading(props);
-
-  const { event, client } = props;
 
   const result = await queryOpenAI({
     prompt: generateHeroPrompt(animal),
   });
   const heroNames = result.trim().split(", ");
 
-  client.chat.update({
+  await client.chat.update({
     text: `Hi <@${
       event.user
     }>, I made up some names for a hero ${animal}: ${heroNames.join(", ")}`,
@@ -35,5 +34,5 @@ export const sayAnimalHero = async (props: AppMentionProps, animal: string) => {
     ts: loadingMsg.ts,
   });
 
-  console.log("Finished sayAnimalHero");
+  logger.info("Finished sayAnimalHero");
 };
