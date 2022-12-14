@@ -21,7 +21,7 @@ export const sayPaint = async (props: AppMentionProps, paint: string) => {
     size: "512x512",
   });
   const image_url = result.data.data[0].url;
-  console.log(image_url);
+  // console.log(image_url);
 
   // const image_url =
   //   "https://cdn.openai.com/API/images/guides/image_generation_simple.webp";

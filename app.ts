@@ -11,7 +11,7 @@ import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sayAnimalHero } from "./lib/sayAnimalHero";
 import { sayPaint } from "./lib/sayPaint";
-import { sayQandA } from "./lib/qAndAPrompt";
+import { sayQandA } from "./lib/sayQAndA";
 import { sayDefault } from "./lib/sayDefault";
 import { sayLoading } from "./lib/sayLoading";
 
