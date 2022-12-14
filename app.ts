@@ -1,14 +1,11 @@
-// This example shows how to listen to a button click
-// It uses slash commands and actions
-// Require the Bolt package (github.com/slackapi/bolt)
 import { App } from "@slack/bolt";
-import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { publishAppHome } from "./lib/publishAppHome";
 import { sayAnimalHero } from "./lib/sayAnimalHero";
 import { sayDefault } from "./lib/sayDefault";
 import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/sayQAndA";
 
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config();
 
 const app = new App({
@@ -69,6 +66,7 @@ app.event("app_mention", async (props) => {
 app.message(
   new RegExp(/^(hi|hello|hey) cody\!.*/, "i"),
   async ({ message, event, context, say, logger, client, payload }) => {
+    logger.info("Responding to HI");
     // @ts-expect-error
     const user = message.user;
 

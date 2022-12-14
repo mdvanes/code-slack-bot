@@ -8,7 +8,8 @@
   },
   "author": "M. van Es",
   "scripts": {
-    "start": "ts-node app.ts",
+    "dev": "ts-node app.ts",
+    "start": "node dist/app.js",
     "build": "tsc -p tsconfig.json",
     "build:func": "tsc",
     "watch:func": "tsc -w",
