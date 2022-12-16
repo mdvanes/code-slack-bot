@@ -4,8 +4,8 @@ import { sayAnimalHero } from "./lib/sayAnimalHero";
 import { sayDefault } from "./lib/sayDefault";
 import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/sayQAndA";
-
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
 dotenv.config();
 
 const app = new App({
@@ -13,6 +13,17 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   socketMode: true,
+  customRoutes: [
+    {
+      path: "/",
+      method: ["GET"],
+      handler: (req, res) => {
+        console.log("Called warmup endpoint on / for Cody 🌞");
+        res.writeHead(200);
+        res.end("OK");
+      },
+    },
+  ],
 });
 
 app.event("app_home_opened", async (props) => {
@@ -85,10 +96,11 @@ app.message(
 );
 
 (async () => {
+  const port = process.env.PORT || 3000;
   // Start your app
-  await app.start(process.env.PORT || 3000);
+  await app.start(port);
 
-  console.log("⚡️ Bolt app is running!");
+  console.log(`⚡️ Bolt app is running on port ${port}.`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {

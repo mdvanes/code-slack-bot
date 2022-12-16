@@ -22,9 +22,11 @@ It needs to keep a socket open, because it should listen to incoming requests fr
 ```
 npm run build
 az login --tenant ??? # id from Azure Active Directory
-# first time: az webapp up --sku B1 --name cody-slack-bot-app --resource-group rg-codestar-cody-slackbot --location westeurope --plan CodyCodestar_asp_5948 --os-type Linux --runtime "NODE:18-lts" --logs --dryrun
+# first time: az webapp up --sku B1 --name cody-slack-bot-app --resource-group rg-codestar-cody-slackbot --location westeurope --plan CodyCodestar_asp_5948 --os-type Linux --runtime "NODE:16-lts" --dryrun
 
-az webapp up --os-type Linux --runtime "NODE:18-lts"
+az webapp up --os-type Linux --runtime "NODE:16-lts"
+
+# note: it should be possible to run az webapp up with the --logs flag to start logs, but this caused problems
 
 # smoke test
 az webapp log tail
@@ -33,7 +35,11 @@ https://cody-slack-bot-app.azurewebsites.net/api/
 
 ## Deploy to Azure
 
-- Set envars in Azure: rg-codestar-cody-slackbot > cody-slack-bot-app > Settings / Configuration > Application Settings, add:
+- Set envars in Azure: 
+
+`az webapp config appsettings set --resource-group rg-codestar-cody-slackbot --name cody-slack-bot-app --settings "@env.json"`
+
+- Or set envars in manually in Azure Portal: rg-codestar-cody-slackbot > cody-slack-bot-app > Settings / Configuration > Application Settings, add:
 
 ```
 OPENAI_API_KEY=the_openai_api_key
@@ -43,16 +49,9 @@ SLACK_SIGNING_SECRET=the_slack_signing_secret
 WEBSITES_CONTAINER_START_TIME_LIMIT=600
 ```
 
-- In VS Code, in the Azure toolbar under Resources, expand codestar-website-api > Slots > test and right-click. Click "Swap slot..."
-- Select the production slot
+- In Azure Portal, under Monitoring/Health Check: enable and point to `/`, the warmup endpoint. It will respond with "OK".
 
-or:
-
-- in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-cody-slackbot Function App. Allow overwriting the existing deployment.
-
-Test with `curl ???/api/animal-hero/\?animal\=panda`
-
-Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence%3F`
+Test the deployment with `curl <Azure webapp URL>/`, should respond with "OK"
 
 ## Set up the Slack Bot
 
@@ -84,6 +83,9 @@ Test with `curl ???/api/q-and-a\?question\=Where%20is%20the%20Sea%20of%20Silence
 TODO
 
 - Deploy on Azure. Use Azure botbuilder-adapter https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
+  - When problem with connecting Azure to Slack: call the endpoint directly, and while waiting for response to warmup request it seems to work. And then it will disconnect on Azure when it times out eventually. 
+  - Is it also starting up multiple instances as the endpoint is called multiple times?
+  - Log Stream is showing the Bolt logging, but not anymore after a timeout?
 - add CORS protection
   CORS: in Azure Function App console under > API > CORS
   Request credentials can be turned OFF
