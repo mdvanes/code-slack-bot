@@ -30,7 +30,7 @@ az webapp up --os-type Linux --runtime "NODE:16-lts"
 
 # smoke test
 az webapp log tail
-https://cody-slack-bot-app.azurewebsites.net/api/
+https://cody-slack-bot-app.azurewebsites.net/
 ```
 
 ## Deploy to Azure
