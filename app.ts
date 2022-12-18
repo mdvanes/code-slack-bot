@@ -150,7 +150,7 @@ const appendText = (a, b) => \`\${a}\${b}\`;
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}. [v5]`);
+  console.log(`⚡️ Bolt app is running on port ${port}. [v6]`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {

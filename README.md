@@ -49,9 +49,12 @@ SLACK_SIGNING_SECRET=the_slack_signing_secret
 WEBSITES_CONTAINER_START_TIME_LIMIT=600
 ```
 
-- In Azure Portal, under Monitoring/Health Check: enable and point to `/`, the warmup endpoint. It will respond with "OK".
+- In Azure Portal, under rg-codestar-cody-slackbot > cody-slack-bot-app > Settings / Configuration > General Settings:
+  - Change "Always on" to "On"
 
-Test the deployment with `curl <Azure webapp URL>/`, should respond with "OK"
+- DOES NOT WORK YET: In Azure Portal, under Monitoring/Health Check: enable and point to `/`, the warmup endpoint. It will respond with "OK".
+
+DOES NOT WORK YET: Test the deployment with `curl <Azure webapp URL>/`, should respond with "OK"
 
 ## Set up the Slack Bot
 
