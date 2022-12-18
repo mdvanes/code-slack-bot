@@ -12,16 +12,16 @@ export const sayDefault = async (say: SayFn, event: AppMentionEvent) => {
           // NOTE: without <@ only the user id is shown.
           text: `Hi <@${event.user}>! Try saying _"Hi Cody!"_`,
         },
-        // accessory: {
-        //   type: "button",
-        //   text: {
-        //     type: "plain_text",
-        //     text: "Button",
-        //     emoji: true,
-        //   },
-        //   value: "click_me_123",
-        //   action_id: "first_button",
-        // },
+        accessory: {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Help",
+            emoji: true,
+          },
+          value: "Help",
+          action_id: "cody_help_button",
+        },
       },
     ],
   });
