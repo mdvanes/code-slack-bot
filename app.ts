@@ -5,6 +5,7 @@ import { sayDefault } from "./lib/sayDefault";
 import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/sayQAndA";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import { sayTest } from "./lib/sayTest";
 
 dotenv.config();
 
@@ -19,6 +20,15 @@ const app = new App({
       method: ["GET"],
       handler: (req, res) => {
         console.log("Called warmup endpoint on / for Cody 🌞");
+        res.writeHead(200);
+        res.end("OK");
+      },
+    },
+    {
+      path: "/warmup",
+      method: ["GET"],
+      handler: (req, res) => {
+        console.log("Called warmup endpoint on /warmup for Cody 🌞");
         res.writeHead(200);
         res.end("OK");
       },
@@ -59,6 +69,8 @@ app.event("app_mention", async (props) => {
   const [mention, command, ...arg] = payload.text.split(" ");
   const argsString = arg.join(" ");
 
+  // console.log(JSON.stringify(payload.text), arg, argsString);
+
   try {
     if (command === "hero") {
       await sayAnimalHero(props, arg[0]);
@@ -66,6 +78,9 @@ app.event("app_mention", async (props) => {
       await sayQandA(props, argsString);
     } else if (command === "paint") {
       await sayPaint(props, argsString);
+    } else if (command === "test") {
+      const prompt = payload.text.substring(payload.text.indexOf("\n"));
+      await sayTest(props, prompt);
     } else {
       await sayDefault(say, event);
     }
@@ -100,7 +115,7 @@ app.message(
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}.`);
+  console.log(`⚡️ Bolt app is running on port ${port}. [v5]`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {
