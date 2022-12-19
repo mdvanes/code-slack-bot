@@ -33,7 +33,7 @@ az webapp log tail
 https://cody-slack-bot-app.azurewebsites.net/
 ```
 
-## Deploy to Azure
+## Deploy to Azure Web App
 
 - Set envars in Azure: 
 
@@ -55,6 +55,39 @@ WEBSITES_CONTAINER_START_TIME_LIMIT=600
 - DOES NOT WORK YET: In Azure Portal, under Monitoring/Health Check: enable and point to `/`, the warmup endpoint. It will respond with "OK".
 
 DOES NOT WORK YET: Test the deployment with `curl <Azure webapp URL>/`, should respond with "OK"
+
+## Deploy on Azure ACI
+
+Because the Azure Webapp times out after 5 minutes and the warmup/health endpoint doesn't seem to be accessible when deployed as a Webapp, it is also possible to deploy as a container.
+
+```
+az group create --name rg-codestar-cody-slackbot --location westeurope
+
+az acr create --resource-group rg-codestar-cody-slackbot --name codestarcodyslackbotacr --sku Basic
+
+az acr login --name codestarcodyslackbotacr
+
+az acr show --name codestarcodyslackbotacr --query loginServer --output table
+
+docker build . -t cody-slack-bot
+
+docker tag cody-slack-bot codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1
+
+docker push codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1
+
+az acr repository list --name codestarcodyslackbotacr.azurecr.io --output table
+
+az container create --resource-group rg-codestar-cody-slackbot \
+  --name cody-slack-bot \
+  --image codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1 \
+  --cpu 1 --memory 1 \
+  --registry-login-server codestarcodyslackbotacr.azurecr.io \
+  --registry-username <service-principal-ID> \
+  --registry-password <service-principal-password> \
+  --ip-address Public --dns-name-label cody-slack-bot --ports 80
+
+
+```
 
 ## Set up the Slack Bot
 
