@@ -11,6 +11,12 @@ import { AppMentionProps } from "./lib/types";
 
 dotenv.config();
 
+const VERSION = {
+  major: 0,
+  minor: 0,
+  patch: 12,
+};
+
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   appToken: process.env.SLACK_APP_TOKEN,
@@ -37,6 +43,11 @@ const app = new App({
     },
   ],
 });
+
+const getVersion = () => {
+  const { major, minor, patch } = VERSION;
+  return `v${major}.${minor}.${patch}`;
+};
 
 app.event("app_home_opened", async (props) => {
   try {
@@ -117,6 +128,21 @@ app.message(
   }
 );
 
+// Cody, what version are you running?
+
+app.message(
+  new RegExp(/^cody, what version are you running\?.*/, "i"),
+  async ({ message, event, context, say, logger, client, payload }) => {
+    logger.info("Responding to VERSION");
+
+    await say({
+      text: `I'm running ${getVersion()} :robot_face:`,
+      // @ts-expect-error
+      thread_ts: event.thread_ts,
+    });
+  }
+);
+
 app.action("cody_help_button", helpButtonResponse);
 
 (async () => {
@@ -124,7 +150,7 @@ app.action("cody_help_button", helpButtonResponse);
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}. [v0.0.11]`);
+  console.log(`⚡️ Bolt app is running on port ${port}. [${getVersion()}]`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {

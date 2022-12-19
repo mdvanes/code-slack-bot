@@ -35,7 +35,7 @@ https://cody-slack-bot-app.azurewebsites.net/
 
 ## Deploy to Azure Web App
 
-- Set envars in Azure: 
+- Set envars in Azure:
 
 `az webapp config appsettings set --resource-group rg-codestar-cody-slackbot --name cody-slack-bot-app --settings "@env.json"`
 
@@ -50,61 +50,20 @@ WEBSITES_CONTAINER_START_TIME_LIMIT=600
 ```
 
 - In Azure Portal, under rg-codestar-cody-slackbot > cody-slack-bot-app > Settings / Configuration > General Settings:
+
   - Change "Always on" to "On"
 
 - DOES NOT WORK YET: In Azure Portal, under Monitoring/Health Check: enable and point to `/`, the warmup endpoint. It will respond with "OK".
 
 DOES NOT WORK YET: Test the deployment with `curl <Azure webapp URL>/`, should respond with "OK"
 
-## Deploy on Azure ACI
+## Deploy on Azure ACI (via Docker Hub)
 
 Because the Azure Webapp times out after 5 minutes and the warmup/health endpoint doesn't seem to be accessible when deployed as a Webapp, it is also possible to deploy as a container.
 
-```
-az group create --name rg-codestar-cody-slackbot --location westeurope
-
-az acr create --resource-group rg-codestar-cody-slackbot --name codestarcodyslackbotacr --sku Basic
-
-# Enable admin user - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account
-# Save username and password
-# Export with: 
-export CODY_REGISTRY_USER=xxx
-export CODY_REGISTRY_PASS=xxx
-
-az acr login --name codestarcodyslackbotacr
-
-az acr show --name codestarcodyslackbotacr --query loginServer --output table
-
-docker build . -t cody-slack-bot
-
-docker tag cody-slack-bot codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1
-
-docker push codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1
-
-az acr repository list --name codestarcodyslackbotacr.azurecr.io --output table
-
-az container create --resource-group rg-codestar-cody-slackbot \
-  --name cody-slack-bot \
-  --image codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1 \
-  --cpu 1 --memory 1 \
-  --registry-login-server codestarcodyslackbotacr.azurecr.io \
-  --registry-username "$CODY_REGISTRY_USER" \
-  --registry-password "$CODY_REGISTRY_PASS" \
-  --secure-environment-variables OPENAI_API_KEY="" SLACK_BOT_TOKEN="" SLACK_SIGNING_SECRET="" SLACK_APP_TOKEN="" \
-  --ip-address Public --dns-name-label cody-slack-bot --ports 80
-
-az container show --resource-group rg-codestar-cody-slackbot --name cody-slack-bot --query ipAddress.fqdn
-
-Result: it hangs on state "Waiting" and unknown how to inspect the container logs (the logs show No Logs Available).
-
-```
-
 TODO https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables#yaml-deployment
 
-
-Deploy via Docker Hub
-
-From Mac, do not build and publish manually, this causes an error when running. Instead rely on the Github workflow. Place a tag in Github and a new version will be build and published. 
+From Mac, do not build and publish manually, this causes an error when running. Instead rely on the Github workflow. Place a tag in Github and a new version will be build and published.
 
 After it's published, deploy to Azure:
 
@@ -117,22 +76,12 @@ az container create --resource-group rg-codestar-cody-slackbot \
   --ip-address Public --dns-name-label cody-slack-bot --ports 80
 ```
 
-TODO Remove the manual steps
-```
-TODO remove - docker build -t mdworld/cody-slack-bot:v6 .
-TODO remove - docker login --username=yourhubusername # not email, but docker id!
-TODO remove - docker push mdworld/cody-slack-bot:v6
-TODO remove - docker logout
-```
-
 And where the container should run:
 
-* copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:v6`
-* set the `.env` 
-* run: `docker-compose up -d`
-* logs: `docker-compose logs -f`
-
-TODO: this is broken (and probably also in Azure) because the image was build on macos. Building with `docker-compose` on linux works fine at least on the local machine.
+- copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:v6`
+- set the `.env`
+- run: `docker-compose up -d`
+- logs: `docker-compose logs -f`
 
 ## Set up the Slack Bot
 
@@ -160,11 +109,10 @@ TODO: this is broken (and probably also in Azure) because the image was build on
   - Install to Workspace, copy token
 - In your Slack workspace: `/invite @Cody Starr`
 
-
 TODO
 
 - Deploy on Azure. Use Azure botbuilder-adapter https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
-  - When problem with connecting Azure to Slack: call the endpoint directly, and while waiting for response to warmup request it seems to work. And then it will disconnect on Azure when it times out eventually. 
+  - When problem with connecting Azure to Slack: call the endpoint directly, and while waiting for response to warmup request it seems to work. And then it will disconnect on Azure when it times out eventually.
   - Is it also starting up multiple instances as the endpoint is called multiple times?
   - Log Stream is showing the Bolt logging, but not anymore after a timeout?
 - add CORS protection

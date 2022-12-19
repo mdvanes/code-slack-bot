@@ -11,23 +11,35 @@ export const sayQandA = async (props: AppMentionProps, prompt: string) => {
   logger.info("Starting sayQandA");
   const loadingMsg = await sayLoading(props);
 
-  const result = await queryOpenAI({
-    model: "text-davinci-003",
-    prompt: generatePrompt(prompt),
-    temperature: 0,
-    max_tokens: 100,
-    top_p: 1,
-    frequency_penalty: 0.0,
-    presence_penalty: 0.0,
-    stop: ["\n"],
-  });
+  try {
+    const result = await queryOpenAI({
+      model: "text-davinci-003",
+      prompt: generatePrompt(prompt),
+      temperature: 0,
+      max_tokens: 100,
+      top_p: 1,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
+      stop: ["\n"],
+    });
 
-  await client.chat.update({
-    text: result.trim(),
-    thread_ts: event.thread_ts,
-    channel: loadingMsg.channel,
-    ts: loadingMsg.ts,
-  });
+    const text = result ? result.trim() : ":sweat_smile:";
+
+    await client.chat.update({
+      text,
+      thread_ts: event.thread_ts,
+      channel: loadingMsg.channel,
+      ts: loadingMsg.ts,
+    });
+  } catch (err) {
+    logger.error(err);
+    await client.chat.update({
+      text: "That question broke me! :broken_heart:",
+      thread_ts: event.thread_ts,
+      channel: loadingMsg.channel,
+      ts: loadingMsg.ts,
+    });
+  }
 
   logger.info("Finished sayQandA");
 };
