@@ -90,15 +90,17 @@ az container create --resource-group rg-codestar-cody-slackbot \
   --registry-login-server codestarcodyslackbotacr.azurecr.io \
   --registry-username "$CODY_REGISTRY_USER" \
   --registry-password "$CODY_REGISTRY_PASS" \
-  --secure-environment-variables OPENAI_API_KEY="" \
-  --secure-environment-variables SLACK_BOT_TOKEN="" \
-  --secure-environment-variables SLACK_SIGNING_SECRET="" \
-  --secure-environment-variables SLACK_APP_TOKEN="" \
+  --secure-environment-variables OPENAI_API_KEY="" SLACK_BOT_TOKEN="" SLACK_SIGNING_SECRET="" SLACK_APP_TOKEN="" \
   --ip-address Public --dns-name-label cody-slack-bot --ports 80
 
 az container show --resource-group rg-codestar-cody-slackbot --name cody-slack-bot --query ipAddress.fqdn
 
+Result: it hangs on "..." and unknown how to inspect the container logs
+
 ```
+
+TODO https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables#yaml-deployment
+
 
 ## Set up the Slack Bot
 
