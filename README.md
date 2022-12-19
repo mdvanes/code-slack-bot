@@ -65,6 +65,12 @@ az group create --name rg-codestar-cody-slackbot --location westeurope
 
 az acr create --resource-group rg-codestar-cody-slackbot --name codestarcodyslackbotacr --sku Basic
 
+# Enable admin user - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account
+# Save username and password
+# Export with: 
+export CODY_REGISTRY_USER=xxx
+export CODY_REGISTRY_PASS=xxx
+
 az acr login --name codestarcodyslackbotacr
 
 az acr show --name codestarcodyslackbotacr --query loginServer --output table
@@ -82,10 +88,15 @@ az container create --resource-group rg-codestar-cody-slackbot \
   --image codestarcodyslackbotacr.azurecr.io/cody-slack-bot:v1 \
   --cpu 1 --memory 1 \
   --registry-login-server codestarcodyslackbotacr.azurecr.io \
-  --registry-username <service-principal-ID> \
-  --registry-password <service-principal-password> \
+  --registry-username "$CODY_REGISTRY_USER" \
+  --registry-password "$CODY_REGISTRY_PASS" \
+  --secure-environment-variables OPENAI_API_KEY="" \
+  --secure-environment-variables SLACK_BOT_TOKEN="" \
+  --secure-environment-variables SLACK_SIGNING_SECRET="" \
+  --secure-environment-variables SLACK_APP_TOKEN="" \
   --ip-address Public --dns-name-label cody-slack-bot --ports 80
 
+az container show --resource-group rg-codestar-cody-slackbot --name cody-slack-bot --query ipAddress.fqdn
 
 ```
 
