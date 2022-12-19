@@ -59,22 +59,11 @@ DOES NOT WORK YET: Test the deployment with `curl <Azure webapp URL>/`, should r
 
 ## Deploy on Azure ACI (via Docker Hub)
 
-Because the Azure Webapp times out after 5 minutes and the warmup/health endpoint doesn't seem to be accessible when deployed as a Webapp, it is also possible to deploy as a container.
+Because the Azure Webapp times out after 5 minutes and the warmup/health endpoint doesn't seem to be accessible when deployed as a Webapp, it is also possible to deploy as a container. From Mac, do not build and publish manually, this causes an error when running. Instead rely on the Github workflow.
 
-TODO https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables#yaml-deployment
-
-From Mac, do not build and publish manually, this causes an error when running. Instead rely on the Github workflow. Place a tag in Github and a new version will be build and published.
+Place a tag in Github and a new version will be build and published.
 
 After it's published, deploy to Azure:
-
-```
-az container create --resource-group rg-codestar-cody-slackbot \
-  --name cody-slack-bot \
-  --image mdworld/cody-slack-bot:latest \
-  --cpu 1 --memory 1 \
-  --secure-environment-variables OPENAI_API_KEY="" SLACK_BOT_TOKEN="" SLACK_SIGNING_SECRET="" SLACK_APP_TOKEN="" \
-  --ip-address Public --dns-name-label cody-slack-bot --ports 80
-```
 
 Copy `secure-env.example.yaml` to `secure-env.yaml` and set the secrets.
 
@@ -82,9 +71,9 @@ Copy `secure-env.example.yaml` to `secure-env.yaml` and set the secrets.
 az container create --resource-group rg-codestar-cody-slackbot --file secure-env.yaml
 ```
 
-And where the container should run:
+Or run locally:
 
-- copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:v6`
+- copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:latest`
 - set the `.env`
 - run: `docker-compose up -d`
 - logs: `docker-compose logs -f`
