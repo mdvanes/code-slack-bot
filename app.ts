@@ -110,6 +110,8 @@ app.message(
   }
 );
 
+// TODO on mobile mention does not work
+
 app.action("cody_help_button", async ({ ack, say, payload }) => {
   await ack();
   // Update the message to reflect the action
@@ -140,6 +142,7 @@ const appendText = (a, b) => \`\${a}\${b}\`;
         },
       },
     ],
+    // TODO this thread_ts is undefined
     // @ts-expect-error
     thread_ts: payload.thread_ts,
   });
@@ -150,7 +153,7 @@ const appendText = (a, b) => \`\${a}\${b}\`;
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}. [v6]`);
+  console.log(`⚡️ Bolt app is running on port ${port}. [v0.0.10]`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {
