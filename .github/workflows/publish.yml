@@ -34,5 +34,5 @@ jobs:
           context: .
           push: true
           # tags: ${{ steps.meta.outputs.tags }}
-          tags: mdworld/homeremote:latest
+          tags: mdworld/cody-slack-bot:latest
           labels: ${{ steps.meta.outputs.labels }}
