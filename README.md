@@ -95,12 +95,44 @@ az container create --resource-group rg-codestar-cody-slackbot \
 
 az container show --resource-group rg-codestar-cody-slackbot --name cody-slack-bot --query ipAddress.fqdn
 
-Result: it hangs on "..." and unknown how to inspect the container logs
+Result: it hangs on state "Waiting" and unknown how to inspect the container logs (the logs show No Logs Available).
 
 ```
 
 TODO https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables#yaml-deployment
 
+
+Deploy via Docker Hub
+
+From Mac, do not build and publish manually, this causes an error when running. Instead rely on the Github workflow. Place a tag in Github and a new version will be build and published. 
+
+After it's published, deploy to Azure:
+
+```
+az container create --resource-group rg-codestar-cody-slackbot \
+  --name cody-slack-bot \
+  --image mdworld/cody-slack-bot:latest \
+  --cpu 1 --memory 1 \
+  --secure-environment-variables OPENAI_API_KEY="" SLACK_BOT_TOKEN="" SLACK_SIGNING_SECRET="" SLACK_APP_TOKEN="" \
+  --ip-address Public --dns-name-label cody-slack-bot --ports 80
+```
+
+TODO Remove the manual steps
+```
+TODO remove - docker build -t mdworld/cody-slack-bot:v6 .
+TODO remove - docker login --username=yourhubusername # not email, but docker id!
+TODO remove - docker push mdworld/cody-slack-bot:v6
+TODO remove - docker logout
+```
+
+And where the container should run:
+
+* copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:v6`
+* set the `.env` 
+* run: `docker-compose up -d`
+* logs: `docker-compose logs -f`
+
+TODO: this is broken (and probably also in Azure) because the image was build on macos. Building with `docker-compose` on linux works fine at least on the local machine.
 
 ## Set up the Slack Bot
 

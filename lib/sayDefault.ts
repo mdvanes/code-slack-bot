@@ -1,6 +1,7 @@
-import { AppMentionEvent, SayFn } from "@slack/bolt";
+import { AppMentionProps } from "./types";
 
-export const sayDefault = async (say: SayFn, event: AppMentionEvent) => {
+export const sayDefault = async ({ say, event, logger }: AppMentionProps) => {
+  logger.info("Responding to DEFAULT");
   await say({
     thread_ts: event.thread_ts,
     text: `Hi <@${event.user}>! Try saying "Hi Cody!"`,
@@ -26,5 +27,3 @@ export const sayDefault = async (say: SayFn, event: AppMentionEvent) => {
     ],
   });
 };
-
-

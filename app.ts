@@ -6,6 +6,8 @@ import { sayPaint } from "./lib/sayPaint";
 import { sayQandA } from "./lib/sayQAndA";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sayTest } from "./lib/sayTest";
+import { helpButtonResponse } from "./lib/helpButtonResponse";
+import { AppMentionProps } from "./lib/types";
 
 dotenv.config();
 
@@ -60,9 +62,7 @@ app.event("team_join", async ({ event, client, logger }) => {
   }
 });
 
-// subscribe to 'app_mention' event in your App config
-// need app_mentions:read and chat:write scopes
-app.event("app_mention", async (props) => {
+const mentionFn = async (props: AppMentionProps) => {
   const { event, context, client, say, payload } = props;
   // console.log(event.text, payload.text, payload);
 
@@ -82,12 +82,19 @@ app.event("app_mention", async (props) => {
       const prompt = payload.text.substring(payload.text.indexOf("\n"));
       await sayTest(props, prompt);
     } else {
-      await sayDefault(say, event);
+      await sayDefault(props);
     }
   } catch (error) {
     console.error(error);
   }
-});
+};
+
+// subscribe to 'app_mention' event in your App config
+// need app_mentions:read and chat:write scopes
+app.event("app_mention", mentionFn);
+
+// TODO on mobile mention does not work, but matching message starting with "cody" will also not work because it has a different type
+// app.message(new RegExp(/^cody .*/, "i"), mentionFn);
 
 app.message(
   new RegExp(/^(hi|hello|hey) cody\!.*/, "i"),
@@ -110,50 +117,14 @@ app.message(
   }
 );
 
-// TODO on mobile mention does not work
-
-app.action("cody_help_button", async ({ ack, say, payload }) => {
-  await ack();
-  // Update the message to reflect the action
-  await say({
-    text: `Hi  :cs_rotating:`,
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `How to talk to me:
-- Ask me to make up super hero names for your pet:
-        - Start with \`@Cody Starr hero \`
-        - Example: \`@Cody Starr hero snake\`
-- Ask me a question based in facts (if not based in facts I will respond with Unknown):
-        - Start with \`@Cody Starr question \`
-        - Example: \`@Cody Starr question what is the most expensive option in the AWS Snow family of products?\`
-        - Example: \`@Cody Starr question how heavy it the moon?\`
-- Ask me to paint something:
-        - Start with \`@Cody Starr paint \`
-        - Example: \`@Cody Starr paint a cat with a hat and a baseball bat in the style of Rembrandt\`
-- Ask me to write your unit tests (JavaScript only for now):
-        - Start with \`@Cody Starr test js \` followed by a code block
-        - Example: \`@Cody Starr test js \` \`\`\`
-const appendText = (a, b) => \`\${a}\${b}\`;
-\`\`\`
-  `,
-        },
-      },
-    ],
-    // TODO this thread_ts is undefined
-    // @ts-expect-error
-    thread_ts: payload.thread_ts,
-  });
-});
+app.action("cody_help_button", helpButtonResponse);
 
 (async () => {
   const port = process.env.PORT || 3000;
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}. [v0.0.10]`);
+  console.log(`⚡️ Bolt app is running on port ${port}. [v0.0.11]`);
 })();
 
 // app.message("knockknock", async ({ message, say }) => {
