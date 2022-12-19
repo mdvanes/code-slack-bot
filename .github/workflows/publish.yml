@@ -29,10 +29,10 @@ jobs:
 
       - name: Build and push Docker image
         # if: ${{ github.ref == 'main' }}
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           # tags: ${{ steps.meta.outputs.tags }}
           tags: mdworld/homeremote:latest
-          # labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
