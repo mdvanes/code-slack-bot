@@ -76,6 +76,12 @@ az container create --resource-group rg-codestar-cody-slackbot \
   --ip-address Public --dns-name-label cody-slack-bot --ports 80
 ```
 
+Copy `secure-env.example.yaml` to `secure-env.yaml` and set the secrets.
+
+```
+az container create --resource-group rg-codestar-cody-slackbot --file secure-env.yaml
+```
+
 And where the container should run:
 
 - copy the `docker-compose.yml` and replace `build` by `image: mdworld/cody-slack-bot:v6`

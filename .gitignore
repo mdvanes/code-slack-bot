@@ -101,3 +101,4 @@ __azurite_db*__.json
 NOTES.md
 image.webp
 env.json
+secure-env.yaml

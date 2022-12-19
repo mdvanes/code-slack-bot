@@ -1,0 +1,32 @@
+apiVersion: "2021-10-01"
+location: westeurope
+name: cody-slack-bot
+properties:
+  containers:
+    - name: cody-slack-bot
+      properties:
+        environmentVariables:
+          - name: "OPENAI_API_KEY"
+            secureValue: ""
+          - name: "SLACK_BOT_TOKEN"
+            secureValue: ""
+          - name: "SLACK_SIGNING_SECRET"
+            secureValue: ""
+          - name: "SLACK_APP_TOKEN"
+            secureValue: ""
+        image: mdworld/cody-slack-bot:latest
+        ports:
+          - port: 80
+        resources:
+          requests:
+            cpu: 1.0
+            memoryInGB: 1.0
+  ipAddress:
+    ports:
+      - port: 80
+    type: Public
+    dnsNameLabel: cody-slack-bot
+  osType: Linux
+  restartPolicy: Always
+tags: null
+type: Microsoft.ContainerInstance/containerGroups
