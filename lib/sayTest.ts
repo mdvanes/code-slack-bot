@@ -9,9 +9,13 @@ import { logDate } from "./util";
 const sumNumbers = (a, b) => a + b;
 ```
 */
-export const sayTest = async (props: AppMentionProps, prompt: string) => {
+export const sayTest = async (
+  props: AppMentionProps,
+  prompt: string,
+  lang: string
+) => {
   const { event, client, logger } = props;
-  logger.info(`${logDate()} Starting sayTest`);
+  logger.info(`${logDate()} Starting sayTest for ${lang}`);
   const loadingMsg = await sayLoading(props);
 
   const result = await queryOpenAI({

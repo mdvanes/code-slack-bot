@@ -91,8 +91,8 @@ const mentionFn = async (props: AppMentionProps) => {
     } else if (command === "paint") {
       await sayPaint(props, argsString);
     } else if (command === "test") {
-      const prompt = payload.text.substring(payload.text.indexOf("\n"));
-      await sayTest(props, prompt);
+      const [lang, prompt] = argsString.split("\n");
+      await sayTest(props, prompt, lang);
     } else {
       await sayDefault(props);
     }
