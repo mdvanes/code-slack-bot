@@ -1,6 +1,7 @@
 import { queryOpenAI } from "./queryOpenAI";
 import { sayLoading } from "./sayLoading";
 import { AppMentionProps } from "./types";
+import { logDate } from "./util";
 
 /* Expects to be called with 
 @Cody Starr test js
@@ -10,7 +11,7 @@ const sumNumbers = (a, b) => a + b;
 */
 export const sayTest = async (props: AppMentionProps, prompt: string) => {
   const { event, client, logger } = props;
-  logger.info("Starting sayTest");
+  logger.info(`${logDate()} Starting sayTest`);
   const loadingMsg = await sayLoading(props);
 
   const result = await queryOpenAI({
@@ -45,5 +46,5 @@ are: ${result.trim()}`,
     ts: loadingMsg.ts,
   });
 
-  logger.info("Finished sayTest");
+  logger.info(`${logDate()} Finished sayTest`);
 };

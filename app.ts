@@ -8,13 +8,14 @@ import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-
 import { sayTest } from "./lib/sayTest";
 import { helpButtonResponse } from "./lib/helpButtonResponse";
 import { AppMentionProps } from "./lib/types";
+import { logDate } from "./lib/util";
 
 dotenv.config();
 
 const VERSION = {
   major: 0,
   minor: 0,
-  patch: 12,
+  patch: 14,
 };
 
 const app = new App({
@@ -110,7 +111,7 @@ app.event("app_mention", mentionFn);
 app.message(
   new RegExp(/^(hi|hello|hey) cody\!.*/, "i"),
   async ({ message, event, context, say, logger, client, payload }) => {
-    logger.info("Responding to HI");
+    logger.info(`${logDate()} Responding to HI`);
     // @ts-expect-error
     const user = message.user;
 
@@ -133,7 +134,7 @@ app.message(
 app.message(
   new RegExp(/^cody, what version are you running\?.*/, "i"),
   async ({ message, event, context, say, logger, client, payload }) => {
-    logger.info("Responding to VERSION");
+    logger.info(`${logDate()} Responding to VERSION`);
 
     await say({
       text: `I'm running ${getVersion()} :robot_face:`,
@@ -150,7 +151,9 @@ app.action("cody_help_button", helpButtonResponse);
   // Start your app
   await app.start(port);
 
-  console.log(`⚡️ Bolt app is running on port ${port}. [${getVersion()}]`);
+  console.log(
+    `${logDate()} ⚡️ Bolt app is running on port ${port}. [${getVersion()}]`
+  );
 })();
 
 // app.message("knockknock", async ({ message, say }) => {

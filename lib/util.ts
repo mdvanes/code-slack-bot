@@ -33,3 +33,5 @@ export const queryOpenAi = async (
   context.log("completion=", JSON.stringify(completion.data));
   return completion.data.choices[0].text;
 };
+
+export const logDate = () => `[(new Date()).toISOString()]`;
