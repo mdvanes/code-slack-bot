@@ -13,6 +13,12 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
     * az group create --name "rg-codestar-cody-slackbot2" --location "westeurope"
     * az identity create --resource-group "rg-codestar-cody-slackbot2" --name "rg-codestar-cody-slackbot2-id"
     * az deployment group create --resource-group "rg-codestar-cody-slackbot2" --template-file "./DeploymentTemplates/DeployUseExistResourceGroup/template-BotApp-with-rg.json" --parameters "@./DeploymentTemplates/DeployUseExistResourceGroup/parameters-for-template-BotApp-with-rg.json"
+    * az deployment group create --resource-group "rg-codestar-cody-slackbot2" --template-file "./DeploymentTemplates/DeployUseExistResourceGroup/template-AzureBot-with-rg.json" --parameters "@./DeploymentTemplates/DeployUseExistResourceGroup/parameters-for-template-AzureBot-with-rg.json"
+    * npm i
+    * az bot prepare-deploy --lang Typescript --code-dir "."
+    * zip -r bot.zip .
+    * az webapp deployment source config-zip --resource-group "rg-codestar-cody-slackbot2" --name "codestar-cody-slackbot2" --src "./bot.zip"
+    * navigate to the Bot on Azure Portal and Open the Test in Web Chat pane
 * connect bot to Slack: https://learn.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0
 * Port existing features from v1 to v2
 * Get rid of the Docker Container
