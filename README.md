@@ -4,6 +4,26 @@ Converse with OpenAI APIs
 
 This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
 
+# Steps
+
+* create a bot: https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-create-bot?view=azure-bot-service-4.0&tabs=csharp%2Cvs
+* publish to Azure: https://learn.microsoft.com/en-us/azure/bot-service/provision-and-publish-a-bot?view=azure-bot-service-4.0&tabs=multitenant%2Ccsharp
+    * az login --tenant ???
+    * az account set --subscription ???
+    * az group create --name "rg-codestar-cody-slackbot2" --location "westeurope"
+    * az identity create --resource-group "rg-codestar-cody-slackbot2" --name "rg-codestar-cody-slackbot2-id"
+    * az deployment group create --resource-group "rg-codestar-cody-slackbot2" --template-file "./DeploymentTemplates/DeployUseExistResourceGroup/template-BotApp-with-rg.json" --parameters "@./DeploymentTemplates/DeployUseExistResourceGroup/parameters-for-template-BotApp-with-rg.json"
+* connect bot to Slack: https://learn.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0
+* Port existing features from v1 to v2
+* Get rid of the Docker Container
+* And then use Chat GTP 4 instead of 3 
+
+Run locally
+
+* install https://github.com/microsoft/BotFramework-Emulator/blob/master/README.md
+* start bot with `npm start`
+* start emulator with bot url: `http://localhost:3978/api/messages` and send a message. It should be echoed.
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) version 10.14.1 or higher
